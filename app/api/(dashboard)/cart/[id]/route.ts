@@ -6,6 +6,10 @@ import { NextResponse } from "next/server";
 import { Types } from "mongoose";
 import Cart from "@/lib/modals/cart";
 
+interface Params {
+  id: string;
+  cartItemId?: string;
+}
 // POST request to add a new item to the cart
 export const POST = async (request: Request) => {
   try {
@@ -66,7 +70,7 @@ export const POST = async (request: Request) => {
 
 // DELETE request to remove a cart item (updated from previous example)
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const DELETE = async (context: { params: any }) => {
+export const DELETE = async (context: { params: Params }) => {
   const cartItemId = context.params.id;
   try {
     // const { searchParams } = new URL(request.url);
@@ -120,7 +124,7 @@ export const DELETE = async (context: { params: any }) => {
 };
 
 // PATCH request to update a cart item
-export const PATCH = async (request: Request, context: { params: any }) => {
+export const PATCH = async (request: Request, context: { params: Params }) => {
   const cartItemId = context.params.cartItemId; // More descriptive name
 
   try {
