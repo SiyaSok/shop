@@ -68,106 +68,106 @@ export const POST = async (request: Request) => {
   }
 };
 
-// DELETE request to remove a cart item (updated from previous example)
-export const DELETE = async (
-  request: Request,
-  { params }: { params: Params }
-) => {
-  const cartItemId = params.id; // Extracting the cart item ID correctly
+// // DELETE request to remove a cart item (updated from previous example)
+// export const DELETE = async (
+//   request: Request,
+//   { params }: { params: Params }
+// ) => {
+//   const cartItemId = params.id; // Extracting the cart item ID correctly
 
-  try {
-    if (!cartItemId || !Types.ObjectId.isValid(cartItemId)) {
-      return new NextResponse("Cart item ID not found or invalid", {
-        status: 400,
-      });
-    }
+//   try {
+//     if (!cartItemId || !Types.ObjectId.isValid(cartItemId)) {
+//       return new NextResponse("Cart item ID not found or invalid", {
+//         status: 400,
+//       });
+//     }
 
-    await connect();
+//     await connect();
 
-    const deletedCartItem = await Cart.findOneAndDelete({ _id: cartItemId });
+//     const deletedCartItem = await Cart.findOneAndDelete({ _id: cartItemId });
 
-    if (!deletedCartItem) {
-      return new NextResponse("Cart item not found or could not be deleted", {
-        status: 404,
-      });
-    }
+//     if (!deletedCartItem) {
+//       return new NextResponse("Cart item not found or could not be deleted", {
+//         status: 404,
+//       });
+//     }
 
-    return new NextResponse(
-      JSON.stringify({
-        message: "Cart item deleted",
-        cartItem: deletedCartItem,
-      }),
-      { status: 200 }
-    );
-  } catch (error: unknown) {
-    if (error instanceof Error) {
-      return new NextResponse("Error deleting cart item: " + error.message, {
-        status: 500,
-      });
-    }
-    return new NextResponse("An unknown error occurred.", { status: 500 });
-  }
-};
+//     return new NextResponse(
+//       JSON.stringify({
+//         message: "Cart item deleted",
+//         cartItem: deletedCartItem,
+//       }),
+//       { status: 200 }
+//     );
+//   } catch (error: unknown) {
+//     if (error instanceof Error) {
+//       return new NextResponse("Error deleting cart item: " + error.message, {
+//         status: 500,
+//       });
+//     }
+//     return new NextResponse("An unknown error occurred.", { status: 500 });
+//   }
+// };
 
-// PATCH request to update a cart item
-export const PATCH = async (request: Request, context: { params: Params }) => {
-  const cartItemId = context.params.cartItemId; // More descriptive name
+// // PATCH request to update a cart item
+// export const PATCH = async (request: Request, context: { params: Params }) => {
+//   const cartItemId = context.params.cartItemId; // More descriptive name
 
-  try {
-    const body = await request.json();
-    const { quantity, productId } = body; //  Expect quantity and productId in the body
+//   try {
+//     const body = await request.json();
+//     const { quantity, productId } = body; //  Expect quantity and productId in the body
 
-    const { searchParams } = new URL(request.url);
-    const userId = searchParams.get("userId");
+//     const { searchParams } = new URL(request.url);
+//     const userId = searchParams.get("userId");
 
-    if (!userId || !Types.ObjectId.isValid(userId)) {
-      return new NextResponse("User ID not found or invalid", { status: 400 });
-    }
+//     if (!userId || !Types.ObjectId.isValid(userId)) {
+//       return new NextResponse("User ID not found or invalid", { status: 400 });
+//     }
 
-    if (!cartItemId || !Types.ObjectId.isValid(cartItemId)) {
-      return new NextResponse("Cart item ID not found or invalid", {
-        status: 400,
-      });
-    }
+//     if (!cartItemId || !Types.ObjectId.isValid(cartItemId)) {
+//       return new NextResponse("Cart item ID not found or invalid", {
+//         status: 400,
+//       });
+//     }
 
-    await connect();
+//     await connect();
 
-    const user = await User.findById(userId); // Verify user exists (important for authorization)
+//     const user = await User.findById(userId); // Verify user exists (important for authorization)
 
-    if (!user) {
-      return new NextResponse("User not found", { status: 404 }); // 404 is more appropriate here
-    }
+//     if (!user) {
+//       return new NextResponse("User not found", { status: 404 }); // 404 is more appropriate here
+//     }
 
-    const cartItem = await Cart.findOne({ _id: cartItemId, user: userId });
+//     const cartItem = await Cart.findOne({ _id: cartItemId, user: userId });
 
-    if (!cartItem) {
-      return new NextResponse("Cart item not found", { status: 404 }); // 404 is more appropriate here
-    }
+//     if (!cartItem) {
+//       return new NextResponse("Cart item not found", { status: 404 }); // 404 is more appropriate here
+//     }
 
-    // Update the cart item
-    const updatedCartItem = await Cart.findByIdAndUpdate(
-      cartItemId,
-      { quantity, product: productId }, // Update quantity and product
-      { new: true, runValidators: true } // Important: run validators!
-    );
+//     // Update the cart item
+//     const updatedCartItem = await Cart.findByIdAndUpdate(
+//       cartItemId,
+//       { quantity, product: productId }, // Update quantity and product
+//       { new: true, runValidators: true } // Important: run validators!
+//     );
 
-    if (!updatedCartItem) {
-      return new NextResponse("Failed to update cart item", { status: 500 }); //Handle potential update failures
-    }
+//     if (!updatedCartItem) {
+//       return new NextResponse("Failed to update cart item", { status: 500 }); //Handle potential update failures
+//     }
 
-    return new NextResponse(
-      JSON.stringify({
-        message: "Cart item updated",
-        cartItem: updatedCartItem,
-      }),
-      { status: 200 }
-    );
-  } catch (error: unknown) {
-    if (error instanceof Error) {
-      return new NextResponse("Error updating cart item: " + error.message, {
-        status: 500,
-      });
-    }
-    return new NextResponse("An unknown error occurred.", { status: 500 });
-  }
-};
+//     return new NextResponse(
+//       JSON.stringify({
+//         message: "Cart item updated",
+//         cartItem: updatedCartItem,
+//       }),
+//       { status: 200 }
+//     );
+//   } catch (error: unknown) {
+//     if (error instanceof Error) {
+//       return new NextResponse("Error updating cart item: " + error.message, {
+//         status: 500,
+//       });
+//     }
+//     return new NextResponse("An unknown error occurred.", { status: 500 });
+//   }
+// };
