@@ -13,7 +13,9 @@ interface Product {
   outOfStock: boolean;
   category?: { _id: string; name: string };
 }
-
+interface PageProps {
+  params: { id: string };
+}
 async function getProducts(id: string): Promise<Product[]> {
   try {
     const response = await axios.get<Product[]>(
@@ -39,18 +41,15 @@ function simplifyProduct(product: Product) {
       : null,
   };
 }
-
-export default async function shppage({ params }: { params: { id: string } }) {
+export default async function shppage({ params }: PageProps) {
   const { id } = params;
 
   try {
     const products = await getProducts(id);
     const simplifiedProducts = products.map(simplifyProduct);
 
-    return (
-      <Product products={simplifiedProducts} /> // No other props passed in this example
-    );
-  } catch (error: Error) {
+    return <Product products={simplifiedProducts} />;
+  } catch (error: any) {
     if (error.message === "Product not found") {
       notFound();
     }
