@@ -2,7 +2,6 @@
 
 import axios from "axios";
 import Product from "@/app/components/Products";
-import { notFound } from "next/navigation";
 
 interface Product {
   _id: string;
