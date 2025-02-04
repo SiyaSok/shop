@@ -177,6 +177,7 @@ export const CartProvider = ({ children }: CartProviderProps) => {
       router.push("/products");
     } catch (error) {
       // setMessage(error.response?.data?.message || "Something went wrong!");
+      console.error("Error removing item from cart:", error);
     }
   };
 

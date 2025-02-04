@@ -15,19 +15,6 @@ interface CartItem {
   outOfStock?: boolean;
 }
 
-interface Product {
-  _id: string;
-  title: string;
-  description?: string;
-  price: number;
-  image: string;
-  outOfStock?: boolean;
-  category?: {
-    _id: string;
-    name: string;
-  };
-}
-
 async function getProducts(): Promise<CartItem[]> {
   try {
     const response = await axios.get<{ items: CartItem[] }>(

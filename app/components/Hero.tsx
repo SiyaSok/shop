@@ -1,6 +1,5 @@
 /** @format */
 
-import Image from "next/image";
 import CoverIamge from "@/public/images/hero.webp";
 const Hero = () => {
   return (
@@ -28,18 +27,7 @@ const Hero = () => {
             </div>
           </div>
           {/* Taxi Image (positioned above the hero image) */}
-          <div className='absolute top-0 left-0 w-full h-full flex items-center justify-center pointer-events-none'>
-            {" "}
-            {/* Use pointer-events-none */}
-            {/* <Image
-              src={CoverIamge}
-              alt='CoverIamge'
-              width={300}
-              height={300}
-              className='object-cover rounded-t-lg mb-2'
-            /> */}
-            {/* Adjust width as needed */}
-          </div>
+          <div className='absolute top-0 left-0 w-full h-full flex items-center justify-center pointer-events-none'></div>
         </div>
 
         {/* Rest of your page content */}

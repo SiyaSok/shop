@@ -3,7 +3,6 @@
 import PageHero from "@/app/components/PageHero";
 
 export const metadata = {
-  // No need for the type here, it's inferred
   title: "Products",
 };
 

@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
+import { motion } from "framer-motion";
 import logo from "@/public/images/logo.webp";
 import { MdOutlineShoppingCart } from "react-icons/md";
 import { CiHeart } from "react-icons/ci";
@@ -79,12 +80,27 @@ const Navbar: React.FC = () => {
                 </Link>
               );
             })}
+            {isLoading && (
+              <div>
+                <Link
+                  key='product'
+                  href='/add-product'
+                  className={`${
+                    pathname === "add-product" ? "bg-black text-white" : ""
+                  } text-black hover:bg-gray-900 hover:text-white rounded-md px-3 py-2`}>
+                  add product
+                </Link>
+              </div>
+            )}
           </div>
           {/* Icons */}
           <div className='flex items-center gap-4'>
             <Link href='/login'>
-              <FaUserMinus className='text-4xl' />
+              <FaUserMinus
+                className={`text-4xl ${isLoading ? "text-green-500" : ""}`}
+              />
             </Link>
+
             <button
               type='button'
               onClick={() => setIsSearchOpen((prev) => !prev)}>
@@ -92,11 +108,11 @@ const Navbar: React.FC = () => {
             </button>
             <CiHeart className='text-4xl' />
             <div
-              className='relative cursor-pointer'
+              className='relative'
               onMouseEnter={
                 cartItems.length > 0 ? () => setIsCartOpen(true) : undefined
               }>
-              <MdOutlineShoppingCart className='text-4xl' />
+              <MdOutlineShoppingCart className='text-4xl cursor-pointer' />
               {cartItems.length > 0 && (
                 <span className='absolute top-0 right-0 bg-red-600 text-white text-xs rounded-full px-2'>
                   {cartItems.length}
@@ -107,17 +123,43 @@ const Navbar: React.FC = () => {
         </div>
       </div>
 
-      {/* Cart Modal with Tailwind Animations */}
+      {/* Search Box */}
+      {isSearchOpen && (
+        <div className='fixed top-20 right-0 bg-white/80 z-50 flex justify-center items-center'>
+          <div className='bg-white p-8 rounded-lg shadow-md'>
+            <input
+              type='text'
+              ref={searchInputRef}
+              placeholder='Search...'
+              value={searchTerm}
+              onChange={handleSearchChange}
+              className='border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500'
+            />
+            <button
+              className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ml-2'
+              onClick={submitSearch}>
+              Search
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Cart Modal with Animation */}
       {isCartOpen && cartItems && (
         <div
-          className='fixed top-0 left-0 w-full h-full bg-black/50 z-40 flex justify-end transition-transform transform translate-x-0'
+          className='fixed top-0 left-0 w-full h-full bg-black/50 z-40 flex justify-end'
           onClick={(e) => {
             if ((e.target as HTMLElement).id === "cart-backdrop") {
               setIsCartOpen(false);
             }
           }}
           id='cart-backdrop'>
-          <div className='absolute h-full right-0 w-92 bg-white shadow-lg py-4 px-8 z-50 transform transition-transform duration-300 ease-in-out translate-x-0'>
+          <motion.div
+            initial={{ x: "100%" }}
+            animate={{ x: 0 }}
+            exit={{ x: "100%" }}
+            transition={{ type: "spring", stiffness: 100, damping: 20 }}
+            className='absolute h-full right-0 w-92 bg-white shadow-lg py-4 px-8 z-50'>
             <div className='flex justify-between items-center'>
               <h2 className='text-2xl font-bold border-b py-4'>
                 Shopping Cart
@@ -164,7 +206,35 @@ const Navbar: React.FC = () => {
             ) : (
               <p className='text-xs text-gray-500'>Cart is empty</p>
             )}
-          </div>
+            <div className=' w-full absolute bottom-4 right-0  '>
+              <div className='flex text-black w-full gap-2 items-center  mt-2 w-full py-8 px-6 border-b'>
+                <div className='flex gap-1 items-center w-1/2'>Subtotal</div>
+                <div className='flex gap-1 items-center w-1/2 text-yellow-700'>
+                  R {cartTotal?.toFixed(2)}
+                </div>
+              </div>
+              <div className='flex text-white w-full gap-2 items-center justify-evenly mt-2 w-full py-4'>
+                <div className='flex gap-1 items-center'>
+                  <button className='text-black border border-black rounded-full px-4 py-2 hover:bg-black hover:text-white  w-full'>
+                    <Link href='/cart' />
+                    Cart
+                  </button>
+                </div>
+                <div className='flex gap-1 items-center'>
+                  <button className='text-black border border-black rounded-full px-4 py-2  hover:bg-black hover:text-white  w-full'>
+                    <Link href='/cart' />
+                    Compare
+                  </button>
+                </div>
+                <div className='flex gap-1 items-center'>
+                  <button className='text-black border border-black rounded-full px-4 py-2  hover:bg-black hover:text-white  w-full'>
+                    <Link href='/cart' />
+                    checkout
+                  </button>
+                </div>
+              </div>
+            </div>
+          </motion.div>
         </div>
       )}
     </nav>
