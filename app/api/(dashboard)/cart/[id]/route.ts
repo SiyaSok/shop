@@ -69,18 +69,13 @@ export const POST = async (request: Request) => {
 };
 
 // DELETE request to remove a cart item (updated from previous example)
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const DELETE = async (context: { params: Params }) => {
-  const cartItemId = context.params.id;
+export const DELETE = async (
+  request: Request,
+  { params }: { params: Params }
+) => {
+  const cartItemId = params.id; // Extracting the cart item ID correctly
+
   try {
-    // const { searchParams } = new URL(request.url);
-    // const userId = searchParams.get("userId");
-    // console.log({ userId });
-
-    // if (!userId || !Types.ObjectId.isValid(userId)) {
-    //   return new NextResponse("User ID not found or invalid", { status: 400 });
-    // }
-
     if (!cartItemId || !Types.ObjectId.isValid(cartItemId)) {
       return new NextResponse("Cart item ID not found or invalid", {
         status: 400,
@@ -89,21 +84,12 @@ export const DELETE = async (context: { params: Params }) => {
 
     await connect();
 
-    // const user = await User.findById(userId);
-
-    // if (!user) {
-    //   return new NextResponse("User not found", { status: 404 });
-    // }
-
-    const deletedCartItem = await Cart.findOneAndDelete({
-      _id: cartItemId,
-      // user: userId,
-    }); // Find and delete
+    const deletedCartItem = await Cart.findOneAndDelete({ _id: cartItemId });
 
     if (!deletedCartItem) {
       return new NextResponse("Cart item not found or could not be deleted", {
         status: 404,
-      }); // 404 if not found or not deleted
+      });
     }
 
     return new NextResponse(
