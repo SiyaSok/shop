@@ -5,14 +5,11 @@ import { NextResponse } from "next/server";
 import { Types } from "mongoose";
 import Cart from "@/lib/modals/cart";
 
-export const DELETE = async (
-  request: Request,
-  { params }: { params: { productId: string } } // Keep this line for Typescript, but don't destructure
-) => {
+export const DELETE = async (request: Request) => {
   try {
-    const productId = params.productId; // Access productId directly from params
-    const { searchParams } = new URL(request.url);
-    const cartItemId = searchParams.get("cartItemId");
+    const url = new URL(request.url);
+    const productId = url.pathname.split("/").pop(); // Extract productId from URL
+    const cartItemId = url.searchParams.get("cartItemId");
 
     console.log({ productId, cartItemId });
 
@@ -27,11 +24,10 @@ export const DELETE = async (
 
     await connect();
 
-    // Remove only the specific product from the cart's `items` array
     const updatedCart = await Cart.findOneAndUpdate(
       { _id: cartItemId },
       { $pull: { items: { productId } } },
-      { new: true } // Return the updated cart
+      { new: true }
     );
 
     console.log({ updatedCart });
