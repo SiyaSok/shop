@@ -30,6 +30,8 @@ const SortFilter: React.FC<SortFilterProps> = ({
 }) => {
   const [sortOption, setSortOption] = useState<string>("");
   const [categories, setCategories] = useState<Category[]>([]);
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [sortBy, setSortBy] = useState("");
   useEffect(() => {
     async function fetchCategories() {

@@ -65,11 +65,12 @@ export const POST = async (request: Request) => {
 };
 
 // DELETE request to remove a cart item (updated from previous example)
-export const DELETE = async (request: Request, context: { params: any }) => {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+
+export const DELETE = async (context: { params: any }) => {
   const cartItemId = context.params.id;
-  console.log(context.params);
   try {
-    const { searchParams } = new URL(request.url);
+    // const { searchParams } = new URL(request.url);
     // const userId = searchParams.get("userId");
     // console.log({ userId });
 

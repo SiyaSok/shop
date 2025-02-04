@@ -2,7 +2,6 @@
 
 import connect from "@/lib/db";
 import User from "@/lib/modals/users";
-import Category from "@/lib/modals/category";
 import { NextResponse } from "next/server";
 import { Types } from "mongoose";
 import Product from "@/lib/modals/products";

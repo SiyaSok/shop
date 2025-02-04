@@ -50,6 +50,7 @@ const Navbar: React.FC = () => {
       await deleteItem(productId);
     } catch (error: unknown) {
       setError("Error removing item. Please try again.");
+      console.error("Error removing item from cart:", error);
     } finally {
       setDeletingItemId(null);
     }

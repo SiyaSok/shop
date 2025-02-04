@@ -93,10 +93,12 @@ export const POST = async (request: Request) => {
       });
     }
 
-    // ✅ Fix totalPrice calculation
-    cart.totalPrice = cart.items.reduce((total: number, item: any) => {
-      return total + (item.price ? item.price * item.quantity : 0);
-    }, 0);
+    cart.totalPrice = cart.items.reduce(
+      (total: number, item: { price: number; quantity: number }) => {
+        return total + (item.price ? item.price * item.quantity : 0);
+      },
+      0
+    );
 
     console.log({ cart });
 
