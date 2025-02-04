@@ -7,10 +7,10 @@ import Cart from "@/lib/modals/cart";
 
 export const DELETE = async (
   request: Request,
-  context: { params: { productId: string } }
+  { params }: { params: { productId: string } }
 ) => {
   try {
-    const { productId } = context.params;
+    const { productId } = params;
     const { searchParams } = new URL(request.url);
     const cartItemId = searchParams.get("cartItemId");
 
