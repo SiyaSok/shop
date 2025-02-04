@@ -9,23 +9,30 @@ import Product from "@/lib/modals/products";
 
 export const GET = async (
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: { category: string } } // Correct parameter name here
 ) => {
-  const productId = params.id; // Access id directly from params
+  const categoryIdFromRoute = params.category; // Use category, not id
   try {
     const { searchParams } = new URL(request.url);
     const userId = searchParams.get("userId");
-    const categoryId = searchParams.get("categoryId");
+    const categoryIdFromQuery = searchParams.get("categoryId"); // If you also need it from query
 
     if (!userId || !Types.ObjectId.isValid(userId)) {
       return new NextResponse("user Id not found", { status: 400 });
     }
-    if (!categoryId || !Types.ObjectId.isValid(categoryId)) {
-      return new NextResponse("category Id not found", { status: 400 });
+
+    // Decide which categoryId to use: from route or query parameter
+    let categoryId;
+    if (categoryIdFromRoute) {
+      categoryId = categoryIdFromRoute;
+    } else if (categoryIdFromQuery) {
+      categoryId = categoryIdFromQuery;
+    } else {
+      return new NextResponse("Category ID not found", { status: 400 });
     }
 
-    if (!productId || !Types.ObjectId.isValid(productId)) {
-      return new NextResponse("Product Id not found", { status: 400 });
+    if (!categoryId || !Types.ObjectId.isValid(categoryId)) {
+      return new NextResponse("Category Id not found", { status: 400 });
     }
 
     await connect();
@@ -40,12 +47,22 @@ export const GET = async (
     const category = await Category.findById(categoryId);
     if (!category) {
       return new NextResponse(
-        JSON.stringify({ message: "category not found" }),
+        JSON.stringify({ message: "Category not found" }),
         { status: 400 }
       );
     }
+
+    //  Now, you have the category ID.  You're missing the product ID.
+    //  Where is the product ID coming from in this route?  You'll need
+    //  to either include it in the route path (e.g., /categories/[category]/products/[product])
+    //  or pass it as a query parameter.  I'm going to assume you'll pass it as a query parameter
+    const productId = searchParams.get("productId");
+    if (!productId || !Types.ObjectId.isValid(productId)) {
+      return new NextResponse("Product Id not found", { status: 400 });
+    }
+
     const product = await Product.findOne({
-      _id: productId, // Use productId here
+      _id: productId,
       category: new Types.ObjectId(categoryId),
       user: new Types.ObjectId(userId),
     });
@@ -58,7 +75,7 @@ export const GET = async (
         }
       );
     }
-    return new NextResponse(JSON.stringify(product), { status: 200 }); // Return the actual product
+    return new NextResponse(JSON.stringify(product), { status: 200 });
   } catch (error) {
     console.error(error);
     return new NextResponse(
@@ -67,7 +84,6 @@ export const GET = async (
     );
   }
 };
-
 // // eslint-disable-next-line @typescript-eslint/no-explicit-any
 // export const PATCH = async (request: Request, context: { params: any }) => {
 //   const ProductId = context.params.Product;
