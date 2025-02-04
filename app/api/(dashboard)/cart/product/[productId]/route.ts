@@ -7,14 +7,10 @@ import Cart from "@/lib/modals/cart";
 
 export const DELETE = async (
   request: Request,
-  { params }: { params: { productId: string } } // Fix: Directly destructuring params
+  { params }: { params: { productId: string } } // Keep this line for Typescript, but don't destructure
 ) => {
   try {
-    if (!params?.productId) {
-      return new NextResponse("Missing product ID", { status: 400 });
-    }
-
-    const { productId } = params;
+    const productId = params.productId; // Access productId directly from params
     const { searchParams } = new URL(request.url);
     const cartItemId = searchParams.get("cartItemId");
 
@@ -25,7 +21,7 @@ export const DELETE = async (
       return new NextResponse("Invalid cart item ID", { status: 400 });
     }
 
-    if (!Types.ObjectId.isValid(productId)) {
+    if (!productId || !Types.ObjectId.isValid(productId)) {
       return new NextResponse("Invalid product ID", { status: 400 });
     }
 
@@ -35,7 +31,7 @@ export const DELETE = async (
     const updatedCart = await Cart.findOneAndUpdate(
       { _id: cartItemId },
       { $pull: { items: { productId } } },
-      { new: true }
+      { new: true } // Return the updated cart
     );
 
     console.log({ updatedCart });
@@ -46,11 +42,11 @@ export const DELETE = async (
       });
     }
 
-    return NextResponse.json(
-      {
+    return new NextResponse(
+      JSON.stringify({
         message: "Cart item deleted",
         cart: updatedCart,
-      },
+      }),
       { status: 200 }
     );
   } catch (error: unknown) {
