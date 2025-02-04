@@ -7,9 +7,13 @@ import Cart from "@/lib/modals/cart";
 
 export const DELETE = async (
   request: Request,
-  { params }: { params: { productId: string } }
+  { params }: { params: { productId: string } } // Fix: Directly destructuring params
 ) => {
   try {
+    if (!params?.productId) {
+      return new NextResponse("Missing product ID", { status: 400 });
+    }
+
     const { productId } = params;
     const { searchParams } = new URL(request.url);
     const cartItemId = searchParams.get("cartItemId");
@@ -21,7 +25,7 @@ export const DELETE = async (
       return new NextResponse("Invalid cart item ID", { status: 400 });
     }
 
-    if (!productId || !Types.ObjectId.isValid(productId)) {
+    if (!Types.ObjectId.isValid(productId)) {
       return new NextResponse("Invalid product ID", { status: 400 });
     }
 
@@ -31,7 +35,7 @@ export const DELETE = async (
     const updatedCart = await Cart.findOneAndUpdate(
       { _id: cartItemId },
       { $pull: { items: { productId } } },
-      { new: true } // Return the updated cart
+      { new: true }
     );
 
     console.log({ updatedCart });
@@ -42,11 +46,11 @@ export const DELETE = async (
       });
     }
 
-    return new NextResponse(
-      JSON.stringify({
+    return NextResponse.json(
+      {
         message: "Cart item deleted",
         cart: updatedCart,
-      }),
+      },
       { status: 200 }
     );
   } catch (error: unknown) {
