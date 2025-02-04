@@ -49,10 +49,9 @@ export default async function shppage({ params }: PageProps) {
     const simplifiedProducts = products.map(simplifyProduct);
 
     return <Product products={simplifiedProducts} />;
-  } catch (error: any) {
-    if (error.message === "Product not found") {
-      notFound();
-    }
+  } catch (error) {
+    console.error(error);
+
     return <div>Error loading product.</div>;
   }
 }
