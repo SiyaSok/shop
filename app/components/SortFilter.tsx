@@ -12,7 +12,7 @@ interface Category {
 }
 
 interface SortFilterProps {
-  onLimitChange: (limit: number) => void; // Correct prop types
+  onLimitChange: (limit: number) => void;
   onSortChange: (sortBy: string) => void;
   onCategoryChange: (category: string) => void;
   selectedCategory: string;
@@ -28,11 +28,9 @@ const SortFilter: React.FC<SortFilterProps> = ({
   limit,
   productsTotal,
 }) => {
-  const [sortOption, setSortOption] = useState<string>("");
   const [categories, setCategories] = useState<Category[]>([]);
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [sortBy, setSortBy] = useState("");
+
   useEffect(() => {
     async function fetchCategories() {
       try {
@@ -47,7 +45,7 @@ const SortFilter: React.FC<SortFilterProps> = ({
   }, []);
 
   const handleLimitChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const newLimit = parseInt(e.target.value, 10); // Parse to number
+    const newLimit = parseInt(e.target.value, 10);
     onLimitChange(newLimit);
   };
 
@@ -72,8 +70,7 @@ const SortFilter: React.FC<SortFilterProps> = ({
             <select
               className='p-2 w-24 bg-transparent'
               value={selectedCategory}
-              onChange={handleCategoryChange} // Corrected: Use handleCategoryChange here
-            >
+              onChange={handleCategoryChange}>
               <option value=''>Filter</option>
               {categories.map((category) => (
                 <option key={category._id} value={category._id}>
@@ -89,8 +86,7 @@ const SortFilter: React.FC<SortFilterProps> = ({
             <AiOutlinePicCenter />
           </div>
           <div>|</div>
-          <div>{`Showing 1–${limit || 16} of ${productsTotal} results`}</div>{" "}
-          {/* Corrected template literal */}
+          <div>{`Showing 1–${limit || 16} of ${productsTotal} results`}</div>
         </div>
 
         {/* Category Filter */}
@@ -102,7 +98,6 @@ const SortFilter: React.FC<SortFilterProps> = ({
               className='p-2 border'
               value={limit}
               onChange={handleLimitChange}>
-              {/* ... options */}
               <option value='2'>2</option>
               <option value='4'>4</option>
               <option value='8'>8</option>
@@ -115,15 +110,12 @@ const SortFilter: React.FC<SortFilterProps> = ({
 
           {/* Sort Selection */}
           <div className='flex items-center gap-4'>
-            <label className='block text-sm font-medium'>Sort By:</label>{" "}
-            {/* More descriptive label */}
+            <label className='block text-sm font-medium'>Sort By:</label>
             <select
               className='w-24 p-2'
-              value={sortOption} // You might want to bind to sortOption state here if needed
-              onChange={handleSortByChange} // Corrected: Use handleSortChange here
-            >
-              <option value=''>Sort By</option>{" "}
-              {/* Improved default option text */}
+              value={sortBy}
+              onChange={handleSortByChange}>
+              <option value=''>Sort By</option>
               <option value='highToLow'>Price: High to Low</option>
               <option value='price'>Price: Low to High</option>
               <option value='category'>Category</option>
