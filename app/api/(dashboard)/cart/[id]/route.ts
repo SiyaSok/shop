@@ -6,10 +6,10 @@ import { NextResponse } from "next/server";
 import { Types } from "mongoose";
 import Cart from "@/lib/modals/cart";
 
-interface Params {
-  id: string;
-  cartItemId?: string;
-}
+// interface Params {
+//   id: string;
+//   cartItemId?: string;
+// }
 // POST request to add a new item to the cart
 export const POST = async (request: Request) => {
   try {
